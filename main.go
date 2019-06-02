@@ -60,16 +60,16 @@ func main () {
 	go func() {
 		for i:=0; i<numQuestions; i++ {
 
-				//iterate through question array and compare user answers to answer array
-				fmt.Printf("%v \n", questionBank[i])
-				
-				var ans string
-		    	fmt.Scanln(&ans)
-				if ans == answerBank[i] {
-					fmt.Printf("Correct!\n")
-					correct++
-				} else {
-					fmt.Printf("Wrong :(\n")
+			//iterate through question array and compare user answers to answer array
+			fmt.Printf("%v \n", questionBank[i])
+			
+			var ans string
+	    	fmt.Scanln(&ans)
+			if ans == answerBank[i] {
+				fmt.Printf("Correct!\n")
+				correct++
+			} else {
+				fmt.Printf("Wrong :(\n")
 				}
 			}
 		//after loop through all questions is complete, send "true" to the channel
@@ -82,13 +82,10 @@ func main () {
 	//handler for which finishes first, user completion of quiz or timer
 	select {
         case <-finish:
-	        
 	    case <-timer1.C:
         	fmt.Printf("Time up!\n")  	    
     }
 
     //results!
 	fmt.Printf("Quiz finished! %v/%v correct\n", correct, numQuestions)
-	
-
 }
