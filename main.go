@@ -7,10 +7,13 @@ import (
 	"log"
 	"os"
 	"time"
+	"math/rand"
 )
 
 //adjustable var for how long quiz timer runs (in seconds)
 var timeSet time.Duration = 30
+//flag for randomizing questions from .csv
+var random = true
 
 func main () {
 
@@ -41,10 +44,22 @@ func main () {
 		answerBank = append(answerBank, record[1])	
 	}
 
+
+	//this is our randomizer
+	//if the flag is set to true, we iterate backward through the array
+	//pick a random int from the range, then swap the values
+	if random {
+		for i := len(questionBank) - 1; i > 0; i-- {
+	        j := rand.Intn(i + 1)
+	        questionBank[i], questionBank[j] = questionBank[j], questionBank[i]
+	        answerBank[i], answerBank[j] = answerBank[j], answerBank[i]
+	    }
+	}
+
 	//prompt user for # of questions, then to begin quiz
 	fmt.Printf("How many questions would you like to answer? (max: %v)\n", len(questionBank))
 	var numQuestions int
-    fmt.Scanln(&numQuestions)
+	fmt.Scanln(&numQuestions)
 	fmt.Printf("Type the answer to each problem and press the 'Enter' key\n\nPress 'Enter' to begin\n\n")
 	var input string
 	fmt.Scanln(&input)
