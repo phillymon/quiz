@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 	"math/rand"
+	"regexp"
+	"strings"
 )
 
 //adjustable var for how long quiz timer runs (in seconds)
@@ -28,6 +30,14 @@ func main () {
 	var questionBank []string
 	var answerBank []string
 
+	//A little regex magic to "clean up" the answer in the .csv
+	//we want to only accept letters and numbers
+	//making the regex statement here
+	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+    if err != nil {
+        log.Fatal(err)
+    }
+
 	for {
 
 		record, err := reader.Read()
@@ -41,8 +51,17 @@ func main () {
 		}
 
 		questionBank = append(questionBank, record[0])
-		answerBank = append(answerBank, record[1])	
-	}
+
+    	//apply the regex statement to the answer
+    	//we only do this to the answer string 
+    	//because it's what we compare to the user input later
+    	record[1] = reg.ReplaceAllString(record[1], "")
+    	//store answer as lowercase, we will do the same to the user input
+    	strings.ToLower(record[1])
+
+    	answerBank = append(answerBank, record[1])
+    }	
+		
 
 
 	//this is our randomizer
@@ -80,6 +99,10 @@ func main () {
 			
 			var ans string
 	    	fmt.Scanln(&ans)
+	    	//calling back to the regex to clean up user errors in input
+	    	//also force string to be lowercase in the event of capitalization errors
+	    	ans = reg.ReplaceAllString(ans, "")
+	    	strings.ToLower(ans)
 			if ans == answerBank[i] {
 				fmt.Printf("Correct!\n")
 				correct++
